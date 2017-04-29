@@ -1,0 +1,375 @@
+<html>
+<head>
+<title>Basket Ball Timer by Shyaken</title>
+<!-- Latest compiled and minified CSS -->
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script src="jquery.js"></script>
+<script src="jquery.hotkeys.js"></script>
+<link rel="stylesheet" href="boostrap.css">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="boostrap-theme.css" >
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="boostrap.js" ></script>
+<style type="text/css">
+.timer-btn {
+	width: 75px;
+}
+
+.cfg-btn {
+	width: 135px;
+}
+
+.timer-cointainer {
+	text-align: center;
+	vertical-align: center;
+	height: 128px;
+}
+
+.timer-cointainer label {
+	font-size: 55;
+}
+
+.score-board label.score {
+	font-size: 200;
+	color: red;
+}
+
+.game-timer-cointainer input {
+	font-size: 25;
+	width: 75px;
+}
+
+.game-timer-cointainer {
+	height: 128px;
+}
+
+.team-name {
+	padding: 15px;
+	margin: 10px;
+	cursor: pointer;
+}
+
+body {
+	background-color: black;
+}
+
+</style>
+</head>
+<body>
+
+<div class="row">
+    <div class="col-md-2">
+        <div class="well">
+			<button class="timer-btn btn btn-default" onclick="resetTimer(24)" >24</button> <button class="timer-btn btn btn-default" onclick="resetTimer(14)" >14</button>
+			<br> <br>
+			<button class="timer-btn btn btn-default" onclick="startTimer()" >Start</button> <button class="timer-btn btn btn-default" onclick="stopTimer()" >Stop</button>
+		</div>
+		<!--
+		<div class="well">
+			<label>Hội Ý: </label><label id="hoi-y-1">0</label>
+			<br><br>
+			<button class="timer-btn btn btn-default" onclick="addDisscus(1)" >Add</button> <button class="timer-btn btn btn-default" onclick="undoDisscus(1)" >Undo</button>
+		</div>
+		-->
+    </div>
+    <div class="col-md-8">
+        <div class="row">
+            <div class="col-md-2">
+                <div class="well timer-cointainer">
+					<label id="timer">24</label>
+				</div>
+            </div>
+			
+			<div class="col-md-6 col-md-offset-1" style="margin-top:5px">
+				<center><img src="logo.png" height="120"></center><br>
+                <center><label style="color:yellow">HỘI BÓNG RỔ KHÔNG CHUYÊN NGHỆ AN</label></center><br>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="btn-success team-name" onclick="changeBallOwner(this)"><center><h4 id="team-1">TEAM 1</h4></center></div>
+            </div>
+            <div class="col-md-6">
+                <div class="btn-default team-name" onclick="changeBallOwner(this)"><center><h4 id="team-2">TEAM 2</h4></center></div>
+            </div>
+        </div>
+    </div>
+	<div class="col-md-2">
+        <div class="well">
+			<button class="cfg-btn btn btn-default" data-toggle="modal" data-target="#team-name" >Team name</button> <br> <br> 
+			<button class="cfg-btn btn btn-default" onclick="resetMatch()" >Reset</button> <br> 
+		</div>
+		<!--
+		<div class="well">
+			<label>Hội Ý: </label><label id="hoi-y-2">0</label>
+			<br><br>
+			<button class="timer-btn btn btn-default" onclick="addDisscus(2)" >Add</button> <button class="timer-btn btn btn-default" onclick="undoDisscus(2)" >Undo</button>
+		</div>
+		-->
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-5">
+        <div class="well score-board" style="align:right">
+			<button class="btn btn-default" onclick="undoScore(1)" style="float:right; margin-left: 5px">Undo</button>&nbsp;
+			<button class="btn btn-default" onclick="addScore(1,1)" style="float:right; margin-left: 5px">+1</button>&nbsp;
+			<button class="btn btn-default" onclick="addScore(1,2)" style="float:right; margin-left: 5px">+2</button>&nbsp;
+			<button class="btn btn-default" onclick="addScore(1,3)" style="float:right; margin-left: 5px">+3</button>&nbsp;
+			<div style="clear: both;"></div>
+			<center><label class="score team-1" id="score-team-1">0</label></center>
+			<button class="btn btn-default" onclick="addTeamFouls(1)" style="float:right; margin-left: 5px">Add</button>&nbsp;
+			<button class="btn btn-default" onclick="undoTeamFouls(1)" style="float:right; margin-left: 5px">Undo</button>&nbsp;
+			<button class="btn btn-default" onclick="resetTeamFouls(1)" style="float:right; margin-left: 5px">Reset</button>&nbsp;
+			<label style="float:right; font-size:20px; margin-top:5px;">Team fouls:</label>
+			<div style="clear: both;"></div>
+		</div>
+    </div>
+	<div class="col-md-2">
+		<div class="well game-timer-cointainer form-group" style="padding:0; height: 120px;">
+			<center>
+					<h2>Quarter</h2>
+					<input type="text" class="form-control" name="quarter" id="quarter" value="1" style="text-align:center"></input>
+			</center>
+		</div>
+        <div class="well game-timer-cointainer form-group">
+					
+					<div class="col-md-6">
+						<input type="number" class="form-control" name="mins" id="game-time-min" value="12"></input>
+						<div style="clear: both;"></div>
+					</div>
+					<div class="col-md-6">
+						<input type="number" class="col-xs-1 form-control" name="secs" id="game-time-sec" value="00"></input>
+						<div style="clear: both;"></div>
+					</div>
+					<br>
+					<br>
+					<div class="col-md-6">
+						<button class="btn btn-primary" onclick="startGameTime()">Start</button>
+					</div>
+					<div class="col-md-6">
+						<button class="btn btn-warning" onclick="stopGameTime()">Stop</button>
+					</div>
+		</div>
+		 <div class="well game-timer-cointainer form-group col-md-5" style="padding:5 0">
+						<center><label>Fouls</label></center>
+						<center><label id="team-fouls-1" style="font-size:50">0</label></center>
+		</div>
+		<div class="well game-timer-cointainer form-group col-md-5 col-md-offset-2" style="padding:5 0">
+					
+					<div class="col-md-6">
+						<center><label>Fouls</label></center>
+						<center><label id="team-fouls-2" style="font-size:50">0</label></center>
+					</div>
+		</div>
+    </div>
+    <div class="col-md-5">
+        <div class="well score-board" style="align:right">
+			<button class="btn btn-default" onclick="undoScore(2)" style="float:left; margin-left: 5px">Undo</button>&nbsp;
+			<button class="btn btn-default" onclick="addScore(2,1)" style="float:left; margin-left: 5px">+1</button>&nbsp;
+			<button class="btn btn-default" onclick="addScore(2,2)" style="float:left; margin-left: 5px">+2</button>&nbsp;
+			<button class="btn btn-default" onclick="addScore(2,3)" style="float:left; margin-left: 5px">+3</button>&nbsp;
+			<div style="clear: both;"></div>
+			<center><label class="score team-2" id="score-team-2">0</label></center>
+			<label style="float:left; font-size:20px; margin-top:5px;">Team fouls:</label>
+			<button class="btn btn-default" onclick="addTeamFouls(2)" style="float:left; margin-left: 5px">Add</button>&nbsp;
+			<button class="btn btn-default" onclick="undoTeamFouls(2)" style="float:left; margin-left: 5px">Undo</button>&nbsp;
+			<button class="btn btn-default" onclick="resetTeamFouls(2)" style="float:left; margin-left: 5px">Reset</button>&nbsp;
+			<div style="clear: both;"></div>	
+		</div>
+    </div>
+</div>
+<div style="display:none">
+	<audio id="audio-24" src="24.wav"></audio>
+	<audio id="audio-gametime" src="gametime.wav"></audio>
+</div>
+</body>
+
+<script>
+var mainInterval;
+var gameTimeInterval;
+var countDownTime = 24;
+var scoreBoard = {};
+scoreBoard[1] = [];
+scoreBoard[2] = [];
+
+function resetTimer(sec) {
+	$("#timer").html(sec);
+	countDownTime = sec;
+	clearInterval(mainInterval);
+	mainInterval = setInterval(countDown, 1000);
+}
+
+function startTimer() {
+	clearInterval(mainInterval);
+	mainInterval = setInterval(countDown, 1000);
+}
+
+function stopTimer() {
+	clearInterval(mainInterval);
+}
+
+function countDown() {
+	if(parseInt($("#timer").html()) == 0) {
+		clearInterval(mainInterval);
+		//$("#timer").html(countDownTime);
+	} else {
+		$("#timer").html(parseInt($("#timer").html()) - 1);
+		if(parseInt($("#timer").html()) == 0) {
+			playAudio('24');
+		}
+	}
+}
+
+function countDownGameTime() {
+	if(parseInt($("#game-time-sec").val()) == 0) {
+		if(parseInt($("#game-time-min").val()) == 0) {
+			clearInterval(gameTimeInterval);
+		} else {
+			$("#game-time-sec").val(59);
+			$("#game-time-min").val(parseInt($("#game-time-min").val()) - 1);
+		}
+	} else {
+		$("#game-time-sec").val(parseInt($("#game-time-sec").val()) - 1);
+		if(parseInt($("#game-time-sec").val()) == 0 && parseInt($("#game-time-min").val()) == 0) {
+			playAudio('gametime');
+		}
+	}
+}
+
+function calculateScore(team) {
+	sum = 0;
+	scoreBoard[team].forEach(function (value, index){
+		console.log(index + ": " + value);
+		sum += value;
+	});
+	$("#score-team-" + team).html(sum);
+}
+
+function addScore(team, score) {
+	console.log(score);
+	scoreBoard[team].push(score);
+	console.log(scoreBoard);
+	calculateScore(team);
+}
+
+function undoScore(team) {
+	scoreBoard[team].pop();
+	calculateScore(team);
+}
+
+function addTeamFouls(team) {
+	$("#team-fouls-"+team).html(parseInt($("#team-fouls-"+team).html()) + 1);
+}
+
+function undoTeamFouls(team) {
+	if(parseInt($("#team-fouls-"+team).html()) > 0)  {
+		$("#team-fouls-"+team).html(parseInt($("#team-fouls-"+team).html()) - 1);
+	}
+}
+
+function resetTeamFouls(team) {
+	$("#team-fouls-"+team).html(0);
+}
+
+function setTeamName() {
+	$("#team-1").html($("#team-name-1").val());
+	$("#team-2").html($("#team-name-2").val());
+}
+
+function resetMatch() {
+	stopTimer();
+	stopGameTime();
+	$("#game-time-min").val(12);
+	$("#game-time-sec").val(00);
+	$("#timer").html(24);
+	scoreBoard[1] = [];
+	scoreBoard[2] = [];
+	calculateScore(1);
+	calculateScore(2);
+	resetTeamFouls(1);
+	resetTeamFouls(2);
+	$("#hoi-y-1").html(0);
+	$("#hoi-y-2").html(0);
+}
+
+function addDisscus(team) {
+	$("#hoi-y-"+team).html(parseInt($("#hoi-y-"+team).html()) + 1);
+}
+
+function undoDisscus(team) {
+	if(parseInt($("#hoi-y-"+team).html()) > 0) {
+		$("#hoi-y-"+team).html(parseInt($("#hoi-y-"+team).html()) - 1);
+	}
+}
+
+function startGameTime() {
+	clearInterval(gameTimeInterval);
+	gameTimeInterval = setInterval(countDownGameTime, 1000);
+	startTimer();
+}
+
+function stopGameTime() {
+	clearInterval(gameTimeInterval);
+	stopTimer();
+}
+
+$("#game-time-min").on("change", function(){
+	if(parseInt($("#game-time-min").val()) <= 0) $("#game-time-min").val(0);
+})
+
+$("#game-time-sec").on("change", function(){
+	if(parseInt($("#game-time-sec").val()) <= 0) $("#game-time-sec").val(0);
+	if(parseInt($("#game-time-sec").val()) >= 59) $("#game-time-sec").val(59);
+})
+
+function playAudio(type) {
+	$('#audio-'+type).prop("volume", 1);
+	$("#audio-"+type).trigger("play");
+}
+
+function changeBallOwner(element) {
+	$(".team-name").removeClass('btn-success').addClass('btn-default');
+	$(element).removeClass('btn-default').addClass('btn-success');
+}
+
+shortcut.add("f1",startGameTime);
+shortcut.add("f2",stopGameTime);
+shortcut.add("f3",function(){
+	resetTimer(24);
+});
+shortcut.add("f4",function(){
+	resetTimer(14);
+});
+shortcut.add("f5",stopTimer);
+
+$(document).ready(function(){
+	$('#audio-24').prop("volume", 0);
+	$("#audio-24").trigger("play");
+	$('#audio-gametime').prop("volume", 0);
+	$("#audio-gametime").trigger("play");
+})
+
+</script>
+
+
+<div class="modal fade" id="team-name" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Set Team Name</h4>
+      </div>
+      <div class="modal-body form-group">
+        <label for="team-name-1">Team 1:</label><input class="form-control" type="text" name="team-name-1" id="team-name-1" placeholder="input name of team 1"><br>
+		<label for="team-name-2">Team 2:</label><input class="form-control" type="text" name="team-name-2" id="team-name-2" placeholder="input name of team 2"><br>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" onclick="setTeamName()" data-dismiss="modal" class="btn btn-primary">Save changes</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+</html>
